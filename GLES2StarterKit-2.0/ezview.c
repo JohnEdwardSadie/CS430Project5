@@ -64,19 +64,19 @@ int read_scene(char* filename){
     /*Error Checking*/
     if(fh == 0){
         fclose(fh);
-        fprintf(stderr, "ERROR! The file: '%s' does not exist...\n", filename);
+      //  fprintf(stderr, "ERROR! The file: '%s' does not exist...\n", filename);
         exit(1);
     }
     c = fgetc(fh);
     if (c!= 'P'){
-        fprintf(stderr, "ERROR! Not a ppm file...\n");
+      //  fprintf(stderr, "ERROR! Not a ppm file...\n");
         exit(1);
     }
     ungetc(c, fh);
     //Allocating memory
      pixelImg = (Scene*)malloc(sizeof(Scene));
     if(pixelImg == 0){
-        fprintf(stderr, "ERROR! Can't allocate memory... \n");
+      //  fprintf(stderr, "ERROR! Can't allocate memory... \n");
         exit(1);
     }
     c = fgetc(fh);
