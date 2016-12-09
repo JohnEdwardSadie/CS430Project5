@@ -116,12 +116,117 @@ int read_scene(char* filename){
     return 0;
 }
 
+/*texdemo.c*/
+/*Provided by Dr. Palmer*/
+
+typedef struct {
+  float Position[2];
+  float TexCoord[2];
+} Vertex;
+
+// (-1, 1)  (1, 1)
+// (-1, -1) (1, -1)
+
+Vertex vertexes[] = {
+  {{-1, 1}, {0, 0}},
+  {{1, 1},  {1, 0}},
+  {{-1, -1},  {0, 1}},
+
+  {{1, 1}, {1, 0}},
+  {{1, -1},  {1, 1}},
+  {{-1, -1},  {0, 1}}
+};
+
+//identifiers
+static const char* vertex_shader_text =
+"uniform mat4 MVP;\n"
+"attribute vec2 TexCoordIn;\n"
+"attribute vec2 vPos;\n"
+"varying vec2 TexCoordOut;\n"
+"void main()\n"
+"{\n"
+"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
+"    TexCoordOut = TexCoordIn;\n"
+"}\n";
+
+static const char* fragment_shader_text =
+"varying lowp vec2 TexCoordOut;\n"
+"uniform sampler2D Texture;\n"
+"void main()\n"
+"{\n"
+"    gl_FragColor = texture2D(Texture, TexCoordOut);\n"
+"}\n";
+
+static void error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    //If user presses the ESC key, the window will terminate
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+        glfwSetWindowShouldClose(window, 1);}
+    //Rotate left
+    else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS){
+      rotate += PI/3;
+      }
+    //Rotate right
+    else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS){
+      rotate -= PI/3;
+      }
+    //Scale up
+    else if (key == GLFW_KEY_UP && action == GLFW_PRESS){
+      scale += 0.5;
+      }
+    //Scale down
+    else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS){
+      scale -= 0.5;
+      }
+    //Shear negative
+    else if (key == GLFW_KEY_Q && action == GLFW_PRESS){
+      shear -= 0.5;
+      }
+    //Shear positive
+    else if (key == GLFW_KEY_E && action == GLFW_PRESS){
+      shear += 0.5;
+      }
+    //Translate left
+    else if (key == GLFW_KEY_A && action == GLFW_PRESS){
+      xTrans -= 0.5;
+      }
+    //Translate right
+    else if (key == GLFW_KEY_D && action == GLFW_PRESS){
+      xTrans += 0.5;
+      }
+}
+
+void glCompileShaderOrDie(GLuint shader) {
+  GLint compiled;
+  glCompileShader(shader);
+  glGetShaderiv(shader,
+		GL_COMPILE_STATUS,
+		&compiled);
+  if (!compiled) {
+    GLint infoLen = 0;
+    glGetShaderiv(shader,
+		  GL_INFO_LOG_LENGTH,
+		  &infoLen);
+    char* info = malloc(infoLen+1);
+    GLint done;
+    glGetShaderInfoLog(shader, infoLen, &done, info);
+    printf("Unable to compile shader: %s\n", info);
+    exit(1);
+  }
+}
+
+
 int main(int argc, char *argv[]){
     int c;
 
     pixelImage *image;
-      //Check if arguments are not equal to 4
-       if(argc != 4){
+      //Check if arguments are not equal to 2
+       if(argc != 2){
         fprintf(stderr, "ERROR\n");
         return 1;
     }
