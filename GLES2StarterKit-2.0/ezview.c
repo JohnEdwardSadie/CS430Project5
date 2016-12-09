@@ -1,7 +1,12 @@
 /*Header files and dependencies */
+#define GLFW_DLL 1
+#define GL_GLEXT_PROTOTYPES
+#include <GLES2/gl2.h>
+#include <GLFW/glfw3.h>
+#include "linmath.h"
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <assert.h>
 
 //John E. Sadie
 //CS430 Computer Graphics
@@ -30,6 +35,16 @@ typedef struct Scene{
 }Scene;
 
 Scene *pixelImg;
+
+/* Instantiating variables for affine transformation */
+float rotate = 0;
+float scale = 1;
+float xTrans = 0;
+float yTrans = 0;
+float zTrans = 0;
+float shear = 0;
+float AspectRatio = 0;
+
 
 #define PI 3.14
 #define Color 255
